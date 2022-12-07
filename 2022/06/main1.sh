@@ -1,16 +1,20 @@
 #!/bin/bash
 
-INPUT="./test.txt"
-
-test=$(head -n 1 "$INPUT")
-
-echo $test
-
-counter=0
-for i in $(sed -r 's?(.)?\1 ?g' $INPUT); do
-  signal[$counter]=$i
-  counter=$(($counter+1))
+input=$1
+k=0
+for i in  $(sed -r 's?(.)?\1 ?g' $input); do
+  signal[$k]=$i
+  k=$(($k+1))
 done
 
-echo $test
-echo $counter
+function solve () {
+  for i in $(seq 0 $(($k-$1))); do
+    echo $(seq $i $($i+$(($1-1))))
+    for g in $(seq $i $($i+$(($1-1)))); do
+      echo $i $g
+      echo  ${signal[$g]}
+    done | sort | uniq | wc -l | grep -q "^${1}$" && { echo $(($i+$1)); break; }
+  done
+}
+
+solve 4
